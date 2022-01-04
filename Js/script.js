@@ -1,4 +1,4 @@
-let expressionString = "-1*(-34-56*-2)/-3+(-1+40/2*3)-45";
+let expressionString = "-1*(2*(23-12)+10/(17-16))";
 const specialChars = ["+", "-", "/", "*", "(", ")"];
 let expressionArray;
 checkDigit(expressionString);
@@ -61,10 +61,13 @@ function negativeSign(expressionArray) {
   console.log(expressionArray);
   //return expressionArray;
 }
-
+//save index of the first group scope in other const then
+//count quantity of inner pairs
+//then give scope expressions to scopefunction
 ////Count of open and closed scopes
 function scopesCount(expressionArray) {
   let count = 0;
+  const scopesMap = getScopesMap(expressionArray);
   expressionArray.forEach((element, index) => {
     if (element === "(") {
       count++;
@@ -82,7 +85,23 @@ function scopesCount(expressionArray) {
   console.log("scopes error");
   return null;
 }
-scopesCount(expressionArray);
+
+////all scopes with indexes
+function getScopesMap(expressionArray) {
+  let scopesStack = {
+    scope: {},
+    index: {},
+  };
+  let i = 0;
+  expressionArray.forEach((element, index) => {
+    if (element === "(" || element === ")") {
+      scopesStack.scope[i] = element;
+      scopesStack.index[i] = index;
+      i++;
+    }
+  });
+  return scopesStack;
+}
 
 ////begining function
 function main() {
