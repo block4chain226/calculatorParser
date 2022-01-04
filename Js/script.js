@@ -3,6 +3,8 @@ const specialChars = ["+", "-", "/", "*", "(", ")"];
 let expressionArray;
 checkDigit(expressionString);
 
+main();
+
 ////String expression to Array expression
 function checkDigit(expressionString) {
   expressionArray = expressionString.split("");
@@ -87,10 +89,11 @@ function main() {
   if (scopesCount(expressionArray) !== 0) {
     scopesCalculation(expressionArray);
   } else {
-    noScopescalculation();
+    noScopesCalculation(expressionArray);
   }
 }
-main();
+
+////all single scope calculation
 function scopesCalculation(expressionArray) {
   let tempArray;
   let beginingScope;
@@ -99,51 +102,62 @@ function scopesCalculation(expressionArray) {
   beginingScope = expressionArray.indexOf("(");
   endScope = expressionArray.indexOf(")");
   tempArray = expressionArray.slice(beginingScope + 1, endScope);
-  const tempArrayLength = tempArray.length;
+  let tempArrayLength = tempArray.length;
 
   expressionArray[beginingScope] = String(mainCalculation(tempArray));
   expressionArray.splice(beginingScope + 1, tempArrayLength + 1);
+  //console.log(expressionArray);
   main();
   //}
 }
 
+////expression without scopes calculation
+function noScopesCalculation(expressionArray) {
+  const result = String(mainCalculation(expressionArray));
+  //console.log(expressionArray);
+}
+
 //do all calculations, with and without scopes
-function mainCalculation(tempArray) {
+function mainCalculation(array) {
   let result;
-  for (let index = 0; index < tempArray.length; index++) {
-    switch (tempArray[index]) {
+  for (let index = 0; index < array.length; index++) {
+    switch (array[index]) {
       case "*":
-        result = multiply(tempArray[index - 1], tempArray[index + 1]);
-        tempArray[index - 1] = result;
-        tempArray.splice(index, 2);
+        result = multiply(array[index - 1], array[index + 1]);
+        array[index - 1] = result;
+        array.splice(index, 2);
         index = index - 1;
+        console.log(expressionArray);
         break;
 
       case "/":
-        result = devision(tempArray[index - 1], tempArray[index + 1]);
-        tempArray[index - 1] = result;
-        tempArray.splice(index, 2);
+        result = devision(array[index - 1], array[index + 1]);
+        array[index - 1] = result;
+        array.splice(index, 2);
         index = index - 1;
+        console.log(expressionArray);
         break;
     }
   }
-  for (let index = 0; index < tempArray.length; index++) {
-    switch (tempArray[index]) {
+  for (let index = 0; index < array.length; index++) {
+    switch (array[index]) {
       case "+":
-        result = addition(tempArray[index - 1], tempArray[index + 1]);
-        tempArray[index - 1] = result;
-        tempArray.splice(index, 2);
+        result = addition(array[index - 1], array[index + 1]);
+        array[index - 1] = result;
+        array.splice(index, 2);
         index = index - 1;
+        console.log(expressionArray);
         break;
       case "-":
-        result = substruct(tempArray[index - 1], tempArray[index + 1]);
-        tempArray[index - 1] = result;
-        tempArray.splice(index, 2);
+        result = substruct(array[index - 1], array[index + 1]);
+        array[index - 1] = result;
+        array.splice(index, 2);
         index = index - 1;
+        console.log(expressionArray);
         break;
     }
   }
-  return tempArray;
+  return array;
 }
 
 ///////////////////////////////////////////////////////Calculations
