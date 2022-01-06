@@ -116,9 +116,10 @@ function getScopesMap(expressionArray) {
   expressionArray.forEach((element, index) => {
     if (element === "(" || element === ")") {
       ///////
-      scopesObj.index[j] = index;
-      scopesObj.scope[j] = element;
-
+      // scopesObj.index[j] = index;
+      // scopesObj.scope[j] = element;
+      scopesObj.index[j] = element;
+      scopesObj.scope[j] = [index, element];
       // if (scopesObj.scope[j] === "(") {
       //   scopesObj.openClose[j] = "open";
       // } else if (scopesObj.scope[j] === ")") {
@@ -157,14 +158,14 @@ function getScopesMap(expressionArray) {
 
 function scopesAlgorithm(scopesObj, array) {
   //let scope = ["(8-(-1*(2*(23-12)+(23+23))*(44-23)+1)-10)"];
+  let temp = [];
   let stack = [];
   let j = 0;
   for (let index = 0; index < scopesObj.scope.length; index++) {
     if (scopesObj.scope.length !== 0) {
       if (stack.length !== 0) {
-        if (scopesObj.scope[index] !== stack[stack.length - 2]) {
+        if (scopesObj.scope[index][1] !== stack[stack.length - 1][1]) {
           scopesObj.scope.splice(index, 1);
-          stack.pop();
           stack.pop();
           j++;
           index--;
@@ -173,15 +174,15 @@ function scopesAlgorithm(scopesObj, array) {
           continue;
         }
       }
-      if (scopesObj.scope[index] === scopesObj.scope[index + 1]) {
-        stack.push(scopesObj.scope[index], scopesObj.index[j]);
+      if (scopesObj.scope[index][1] === scopesObj.scope[index + 1][1]) {
+        stack.push(scopesObj.scope[index]);
         scopesObj.scope.splice(index, 1);
         index--;
         j++;
         console.log(stack);
         console.log(scopesObj.scope);
         continue;
-      } else if (scopesObj.scope[index] !== scopesObj.scope[index + 1]) {
+      } else if (scopesObj.scope[index][1] !== scopesObj.scope[index + 1][1]) {
         scopesObj.scope.splice(index, 2);
         j++;
         index--;
@@ -268,6 +269,7 @@ function scopesCalculation(expressionArray, count) {
     gEndScope = scopesMap[scopesMap.length - 1];
     openScope = scopesMap[count];
     closedScope = scopesMap[count + 1];
+    //////////////////////////////////////
     tempArray = expressionArray.slice(openScope + 1, closedScope);
     let tempArrayLength = tempArray.length;
     scopesMap.splice(scopesMap.indexOf(openScope), 2);
