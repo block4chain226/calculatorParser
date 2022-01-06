@@ -1,4 +1,5 @@
-let expressionString = "(8-(-1*(2*(23-12)+(23+23))*(44-23)+1)-10)";
+let expressionString =
+  "(12/1)*2+(8-(-1*(2*(23-12)+(23+23))*(44-23)+1)-10)-8*(-1)";
 const specialChars = ["+", "-", "/", "*", "(", ")"];
 let expressionArray;
 let count = 1;
@@ -157,16 +158,23 @@ function getScopesMap(expressionArray) {
 }
 
 function scopesAlgorithm(scopesObj, array) {
-  //let scope = ["(8-(-1*(2*(23-12)+(23+23))*(44-23)+1)-10)"];
+  //let scope = ["12-(8-(-1*(2*(23-12)+(23+23))*(44-23)+1)-10)"];
   let temp = [];
+  let nextScope;
   let stack = [];
   let j = 0;
   for (let index = 0; index < scopesObj.scope.length; index++) {
     if (scopesObj.scope.length !== 0) {
       if (stack.length !== 0) {
         if (scopesObj.scope[index][1] !== stack[stack.length - 1][1]) {
+          temp = expressionArray.slice(
+            stack[stack.length - 1][0],
+            scopesObj.scope[index][1]
+          );
           scopesObj.scope.splice(index, 1);
           stack.pop();
+          scopesObj = getScopesMap(expressionArray);
+          stack.length = 0;
           j++;
           index--;
           console.log(stack);
@@ -183,7 +191,21 @@ function scopesAlgorithm(scopesObj, array) {
         console.log(scopesObj.scope);
         continue;
       } else if (scopesObj.scope[index][1] !== scopesObj.scope[index + 1][1]) {
+        temp = expressionArray.slice(
+          scopesObj.scope[index][0] + 1,
+          scopesObj.scope[index + 1][0]
+        );
+        expressionArray[scopesObj.scope[index][0]] = String(
+          mainCalculation(temp)
+        );
+        //expressionArray.splice(openScope + 1, tempArrayLength + 1);
+        nextScope = expressionArray.indexOf(")", scopesObj.scope[index][0]);
+        let numb = scopesObj.scope[index][0];
+        expressionArray.splice(scopesObj.scope[index][0] + 1, nextScope - numb);
+        ////find index next scope and minus index of result
         scopesObj.scope.splice(index, 2);
+        scopesObj = getScopesMap(expressionArray);
+        stack.length = 0;
         j++;
         index--;
         console.log(stack);
@@ -194,6 +216,7 @@ function scopesAlgorithm(scopesObj, array) {
       break;
     }
   }
+  main();
 }
 
 ////begining function
@@ -205,9 +228,16 @@ function scopesAlgorithm(scopesObj, array) {
 //   }
 // }
 
+// function main() {
+//   if (scopesCount(expressionArray) !== 0) {
+//     scopesCalculation(expressionArray, count);
+//   } else {
+//     noScopesCalculation(expressionArray);
+//   }
+// }
 function main() {
   if (scopesCount(expressionArray) !== 0) {
-    scopesCalculation(expressionArray, count);
+    scopesAlgorithm(getScopesMap(expressionArray), expressionArray);
   } else {
     noScopesCalculation(expressionArray);
   }
@@ -264,30 +294,31 @@ function scopesCalculation(expressionArray, count) {
   );
   let tempArray;
   let gBeginingScope, gEndScope, openScope, closedScope;
-  while (scopesMap.length > 2) {
-    gBeginingScope = scopesMap[0];
-    gEndScope = scopesMap[scopesMap.length - 1];
-    openScope = scopesMap[count];
-    closedScope = scopesMap[count + 1];
-    //////////////////////////////////////
-    tempArray = expressionArray.slice(openScope + 1, closedScope);
-    let tempArrayLength = tempArray.length;
-    scopesMap.splice(scopesMap.indexOf(openScope), 2);
-    count++;
-    expressionArray[openScope] = String(mainCalculation(tempArray));
-    expressionArray.splice(openScope + 1, tempArrayLength + 1);
-    main();
-  }
-  gBeginingScope = scopesMap[0];
-  gEndScope = scopesMap[scopesMap.length - 1];
-  openScope = scopesMap[count];
-  closedScope = scopesMap[count + 1];
-  tempArray = expressionArray.slice(gBeginingScope + 1, gEndScope);
-  let tempArrayLength = tempArray.length;
-  scopesMap.splice(scopesMap.indexOf(gBeginingScope), 2);
-  count++;
-  expressionArray[gBeginingScope] = String(mainCalculation(tempArray));
-  expressionArray.splice(gBeginingScope + 1, tempArrayLength + 1);
+  ////////////////////////////////////////////////////////////////?
+  // while (scopesMap.length > 2) {
+  //   gBeginingScope = scopesMap[0];
+  //   gEndScope = scopesMap[scopesMap.length - 1];
+  //   openScope = scopesMap[count];
+  //   closedScope = scopesMap[count + 1];
+  //   //////////////////////////////////////
+  //   tempArray = expressionArray.slice(openScope + 1, closedScope);
+  //   let tempArrayLength = tempArray.length;
+  //   scopesMap.splice(scopesMap.indexOf(openScope), 2);
+  //   count++;
+  //   expressionArray[openScope] = String(mainCalculation(tempArray));
+  //   expressionArray.splice(openScope + 1, tempArrayLength + 1);
+  //   main();
+  // }
+  // gBeginingScope = scopesMap[0];
+  // gEndScope = scopesMap[scopesMap.length - 1];
+  // openScope = scopesMap[count];
+  // closedScope = scopesMap[count + 1];
+  // tempArray = expressionArray.slice(gBeginingScope + 1, gEndScope);
+  // let tempArrayLength = tempArray.length;
+  // scopesMap.splice(scopesMap.indexOf(gBeginingScope), 2);
+  // count++;
+  // expressionArray[gBeginingScope] = String(mainCalculation(tempArray));
+  // expressionArray.splice(gBeginingScope + 1, tempArrayLength + 1);
   main();
 }
 
