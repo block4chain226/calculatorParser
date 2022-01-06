@@ -118,6 +118,7 @@ function getScopesMap(expressionArray) {
       ///////
       scopesObj.index[j] = index;
       scopesObj.scope[j] = element;
+
       // if (scopesObj.scope[j] === "(") {
       //   scopesObj.openClose[j] = "open";
       // } else if (scopesObj.scope[j] === ")") {
@@ -152,6 +153,46 @@ function getScopesMap(expressionArray) {
   // });
 
   return scopesObj;
+}
+
+function scopesAlgorithm(scopesObj, array) {
+  //let scope = ["(8-(-1*(2*(23-12)+(23+23))*(44-23)+1)-10)"];
+  let stack = [];
+  let j = 0;
+  for (let index = 0; index < scopesObj.scope.length; index++) {
+    if (scopesObj.scope.length !== 0) {
+      if (stack.length !== 0) {
+        if (scopesObj.scope[index] !== stack[stack.length - 2]) {
+          scopesObj.scope.splice(index, 1);
+          stack.pop();
+          stack.pop();
+          j++;
+          index--;
+          console.log(stack);
+          console.log(scopesObj.scope);
+          continue;
+        }
+      }
+      if (scopesObj.scope[index] === scopesObj.scope[index + 1]) {
+        stack.push(scopesObj.scope[index], scopesObj.index[j]);
+        scopesObj.scope.splice(index, 1);
+        index--;
+        j++;
+        console.log(stack);
+        console.log(scopesObj.scope);
+        continue;
+      } else if (scopesObj.scope[index] !== scopesObj.scope[index + 1]) {
+        scopesObj.scope.splice(index, 2);
+        j++;
+        index--;
+        console.log(stack);
+        console.log(scopesObj.scope);
+        continue;
+      }
+    } else {
+      break;
+    }
+  }
 }
 
 ////begining function
@@ -216,7 +257,10 @@ function main() {
 // }
 
 function scopesCalculation(expressionArray, count) {
-  const scopesMap = getScopesMap(expressionArray);
+  const scopesMap = scopesAlgorithm(
+    getScopesMap(expressionArray),
+    expressionArray
+  );
   let tempArray;
   let gBeginingScope, gEndScope, openScope, closedScope;
   while (scopesMap.length > 2) {
