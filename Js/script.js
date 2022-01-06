@@ -1,4 +1,4 @@
-let expressionString = "(-1*(2*(23-12)+(23+23))*(44-23)+1)";
+let expressionString = "(8-(-1*(2*(23-12)+(23+23))*(44-23)+1)-10)";
 const specialChars = ["+", "-", "/", "*", "(", ")"];
 let expressionArray;
 let count = 1;
@@ -110,7 +110,7 @@ function getScopesMap(expressionArray) {
   let scopesObj = {
     index: [],
     scope: [],
-    openClose: [],
+    //openClose: [],
   };
   let j = 0;
   expressionArray.forEach((element, index) => {
@@ -118,11 +118,11 @@ function getScopesMap(expressionArray) {
       ///////
       scopesObj.index[j] = index;
       scopesObj.scope[j] = element;
-      if (scopesObj.scope[j] === "(") {
-        scopesObj.openClose[j] = "open";
-      } else if (scopesObj.scope[j] === ")") {
-        scopesObj.openClose[j] = "closed";
-      }
+      // if (scopesObj.scope[j] === "(") {
+      //   scopesObj.openClose[j] = "open";
+      // } else if (scopesObj.scope[j] === ")") {
+      //   scopesObj.openClose[j] = "closed";
+      // }
       ////////
       scopesStack.push(index);
       j++;
@@ -130,27 +130,28 @@ function getScopesMap(expressionArray) {
   });
   ////////compare i with i-1, if no i-1 to stack, if yes i and i-1 delete
   let notClosedCount = 0;
-  for (let i = 0; i < scopesObj.openClose.length; i++) {
-    if (stack.length !== 0) {
-      if (scopesObj.openClose[i] === stack[length]) {
-        stack.push(scopesObj.openClose[i]);
-        scopesObj.openClose.splice(i, 1);
-        i--;
-      } else if (scopesObj.openClose[i] !== stack[length]) {
-        scopesObj.openClose.splice(i, 1);
-        stack.pop();
-      }
-    }
-    if (scopesObj.openClose[i] === scopesObj.openClose[i + 1]) {
-      stack.push(scopesObj.openClose[i]);
-      scopesObj.openClose.splice(i, 1);
-    } else if (scopesObj.openClose[i] !== scopesObj.openClose[i + 1]) {
-      scopesObj.openClose.splice(i, 2);
-      i--;
-    }
-  }
+  //for (let i = 0; i < scopesObj.openClose.length; i++) {}
 
-  return scopesStack;
+  // scopesObj.openClose.forEach((element, index) => {
+  //   if (
+  //     scopesObj.openClose[index] === scopesObj.openClose[index + 1] ||
+  //     scopesObj.openClose[index] === stack[stack.length - 1]
+  //   ) {
+  //     stack.push(scopesObj.openClose[index]);
+  //     scopesObj.openClose.splice(index, 1);
+  //   } else if (
+  //     scopesObj.openClose[index] != stack[stack.length - 1] &&
+  //     stack.length !== 0
+  //   ) {
+  //     stack.pop();
+  //     scopesObj.openClose.splice(index, 1);
+  //   }
+  //   if (scopesObj.openClose[index] !== scopesObj.openClose[index + 1]) {
+  //     scopesObj.openClose.splice(index, 2);
+  //   }
+  // });
+
+  return scopesObj;
 }
 
 ////begining function
@@ -188,7 +189,8 @@ function main() {
 //   //}
 // }
 
-// function scopesCalculation(expressionArray, count) {
+// function
+// scopesCalculation(expressionArray, count) {
 //   const scopesMap = getScopesMap(expressionArray);
 //   let tempArray;
 //   let gBeginingScope, gEndScope, openScope, closedScope;
